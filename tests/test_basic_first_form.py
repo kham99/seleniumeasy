@@ -1,5 +1,3 @@
-import time
-
 import pytest
 
 from pages.basic_first_form_page import BasicFirstForm
