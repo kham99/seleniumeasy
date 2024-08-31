@@ -1,33 +1,37 @@
+from selenium.webdriver.common import By
 from pages.base_page import BasePage
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+
+
+ALLERT_MESSAGE_URL = 'https://demo.seleniumeasy.com/bootstrap-alert-messages-demo.html'
+
+
+class AlertMessagesLocators:
+    AUTOCLOSEABLE_BTN = (By.XPATH, '//button[@id = "autoclosable-btn-success"]')
+    AUTOCLOSEABLE_ALERT = (By.XPATH, '//div[@class = "alert alert-success alert-autocloseable-success"]')
+    NORMAL_BTN_SUCCESS = (By.XPATH, '//button[@id = "normal-btn-success"]')
+    NORMAL_ALERT_SUCCESS = (By.XPATH, '//div[@class = "alert alert-success alert-normal-success"]')
+    NORMAL_SUCCESS_BUTTON_CLOSE = (By.XPATH, '//button[@class="close"]')
+
 
 class AlertMessages(BasePage):
-    url = 'https://demo.seleniumeasy.com/bootstrap-alert-messages-demo.html'
+    url = ALLERT_MESSAGE_URL
 
     def __init__(self, driver):
         super().__init__(driver, self.url)
+        self.locators = AlertMessagesLocators()
 
     def open(self):
-        self.driver.get(self.url)
+        self.open()
 
     def autocloseable_success(self):
-        button = self.driver.find_element(By.XPATH, '//button[@id = "autoclosable-btn-success"]')
-        button.click()
-        wait = WebDriverWait(self.driver, 10)
-        wait.until(EC.visibility_of_element_located((By.XPATH,
-            '//div[@class = "alert alert-success alert-autocloseable-success"]')))
-        wait.until(EC.invisibility_of_element_located((By.XPATH,
-            '//div[@class = "alert alert-success alert-autocloseable-success"]')))
+        self.click(self.locators.AUTOCLOSEABLE_BTN)
+        self.wait_visible_element(self.locators.AUTOCLOSEABLE_ALERT)
+        self.wait_invisible_element(self.locators.AUTOCLOSEABLE_ALERT)
 
     def normal_success(self):
-        button = self.driver.find_element(By.XPATH, '//button[@id = "normal-btn-success"]')
-        button.click()
-        wait = WebDriverWait(self.driver, 5)
-        wait.until(
-            EC.visibility_of_element_located((By.XPATH, '//div[@class = "alert alert-success alert-normal-success"]')))
-        close = self.driver.find_elements(By.XPATH, '//button[@class="close"]')
-        close[0].click()
-        wait.until(EC.invisibility_of_element_located(
-            (By.XPATH, '//div[@class = "alert alert-success alert-normal-success"]')))
+        self.find_element(self.locators.AUTOCLOSEABLE_BTN)
+        self.click(self.locators.AUTOCLOSEABLE_BTN)
+        self.wait_visible_element(self.locators.NORMAL_ALERT_SUCCESS)
+        self.find_element(self.locators.NORMAL_SUCCESS_BUTTON_CLOSE)
+        self.click(self.locators.NORMAL_SUCCESS_BUTTON_CLOSE)
+        self.wait_invisible_element(self.locators.NORMAL_ALERT_SUCCESS)
